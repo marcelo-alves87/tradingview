@@ -27,6 +27,17 @@ export class MockService {
   constructor(private http: HttpClient) {
   }
 
+  toBarData(obj): BarData {
+    let barData = {} as  BarData;
+    barData.time = new Date(obj.time).getTime();        
+    barData.open = obj.open;
+    barData.high = obj.high;
+    barData.low = obj.low;
+    barData.close = obj.close;
+    barData.volume = obj.volume;
+    return barData;
+  }
+
  getHistoryList(param): Observable<BarData[]> {
   
   return this.http.get<any[]>("assets/btc-181123_2006-181124_0105.json").pipe(
@@ -34,14 +45,8 @@ export class MockService {
     map( data => {
       let list = [];
       data.forEach(obj => {
-        let barData = {} as  BarData;
-        barData.time = new Date(obj.time).getTime();
+        let barData = this.toBarData(obj);
         MockService.lastBarTimestamp = barData.time;
-        barData.open = obj.open;
-        barData.high = obj.high;
-        barData.low = obj.low;
-        barData.close = obj.close;
-        barData.volume = obj.volume;
         list.push(barData);        
       })
       MockService.dataIndex = list.length - 1;
@@ -89,7 +94,23 @@ export class MockService {
          
           switchMap( () => this.http.get<any[]>("assets/btc-181123_2006-181124_0105.json")),
           map( data => {
-            console.log(data.length);
+            let list = []
+            data.forEach(obj => {
+              let barData : BarData = this.toBarData(obj);  
+              list.push(barData);
+            })
+            list = list.filter(barData => barData.time > MockService.lastBarTimestamp);
+            if(list.length > 0) {
+              let barData = list[list.length - 1];      
+              return {
+                time: MockService.lastBarTimestamp,
+                open: barData.open,
+                close: barData.close,
+                low: barData.low,
+                high: barData.high,
+                volume: barData.volume,
+              }; 
+            }
           })    
             
           
