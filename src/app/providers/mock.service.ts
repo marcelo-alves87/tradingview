@@ -101,7 +101,10 @@ export class MockService {
             })
             list = list.filter(barData => barData.time > MockService.lastBarTimestamp);
             if(list.length > 0) {
-              let barData = list[list.length - 1];      
+              let barData = list[list.length - 1];    
+              if (barData.time - MockService.lastBarTimestamp >= granularity) {
+                MockService.lastBarTimestamp += granularity;    
+              } 
               return {
                 time: MockService.lastBarTimestamp,
                 open: barData.open,
