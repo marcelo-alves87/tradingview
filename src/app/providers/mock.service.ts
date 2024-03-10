@@ -4,6 +4,7 @@ import { map, switchMap, take } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 
 interface BarData {
+  ativo: string;
   time: number;
   open: number;
   high: number;
@@ -16,9 +17,9 @@ interface BarData {
   providedIn: 'root'
 })
 export class MockService {
-  static dataTemplate: BarData = { 'time': 1545572340000, 'open': 3917, 'high': 3917, 'low': 3912.03, 'close': 3912.62, 'volume': 3896 };
   static dataIndex = 0;
   static lastBarTimestamp: number;
+  static symbol;
 
   static dataGenerator(time = +new Date()): BarData {
     return;
@@ -29,6 +30,7 @@ export class MockService {
 
   toBarData(obj): BarData {
     let barData = {} as  BarData;
+    barData.ativo = obj.ativo;
     barData.time = new Date(obj.time).getTime();        
     barData.open = obj.open;
     barData.high = obj.high;
@@ -39,7 +41,7 @@ export class MockService {
   }
 
  getHistoryList(param): Observable<BarData[]> {
-  
+  MockService.symbol = param.symbol.name;  
   return this.http.get<any[]>("assets/btc-181123_2006-181124_0105.json").pipe(
     take(1),
     map( data => {
@@ -49,6 +51,7 @@ export class MockService {
         MockService.lastBarTimestamp = barData.time;
         list.push(barData);        
       })
+      list = list.filter(barData => barData.ativo == MockService.symbol);
       MockService.dataIndex = list.length - 1;
       return list;
     }),
@@ -99,7 +102,7 @@ export class MockService {
               let barData : BarData = this.toBarData(obj);  
               list.push(barData);
             })
-            list = list.filter(barData => barData.time > MockService.lastBarTimestamp);
+            list = list.filter(barData => barData.time > MockService.lastBarTimestamp && barData.ativo == MockService.symbol);
             if(list.length > 0) {
               let barData = list[list.length - 1];    
               if (barData.time - MockService.lastBarTimestamp >= granularity) {
