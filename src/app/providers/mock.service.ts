@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, Observer, interval, Subscription } from 'rxjs';
-import { map, switchMap, take } from 'rxjs/operators';
+import { map, mergeMap, switchMap, take } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 
 interface BarData {
@@ -40,9 +40,14 @@ export class MockService {
     return barData;
   }
 
+  getJsonFile(): Observable<any[]> {
+    const salt = (new Date()).getTime();
+    return this.http.get<any[]>("http://localhost:3000/btc-181123_2006-181124_0105.json?"+salt);
+    
+  }
  getHistoryList(param): Observable<BarData[]> {
   MockService.symbol = param.symbol.name;  
-  return this.http.get<any[]>("assets/btc-181123_2006-181124_0105.json").pipe(
+  return this.getJsonFile().pipe(
     take(1),
     map( data => {
       let list = [];
@@ -88,21 +93,17 @@ export class MockService {
       const duration = 1e3;
       subscription =  interval(duration)
         .pipe(
-          /*
-           * mock data, no need to care about the logic if you use server data
-           * the point is the time of the data
-           * data.time === last.time => update
-           * data.time !== last.time => draw new bar
-           */
-         
-          switchMap( () => this.http.get<any[]>("assets/btc-181123_2006-181124_0105.json")),
-          map( data => {
+        mergeMap(() => this.getJsonFile()),
+        map((data) => {
+            
             let list = []
             data.forEach(obj => {
               let barData : BarData = this.toBarData(obj);  
               list.push(barData);
             })
+            
             list = list.filter(barData => barData.time > MockService.lastBarTimestamp && barData.ativo == MockService.symbol);
+            
             if(list.length > 0) {
               let barData = list[list.length - 1];    
               if (barData.time - MockService.lastBarTimestamp >= granularity) {
@@ -117,9 +118,7 @@ export class MockService {
                 volume: barData.volume,
               }; 
             }
-          })    
-            
-          
+        })  
           
         )
         .subscribe(x => {
