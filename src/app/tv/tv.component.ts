@@ -3,6 +3,7 @@ import { MockService } from '../providers/mock.service';
 import { timer } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
+
 @Component({
   selector: 'app-tv',
   templateUrl: './tv.component.html',
@@ -49,7 +50,7 @@ export class TvComponent implements OnInit, OnDestroy {
       // debug: true, // uncomment this line to see Library errors and warnings in the console
       fullscreen: true,
       symbol: this.symbol,
-      interval: '1',
+      interval: '5',
       container_id: 'tradingview',
       library_path: 'assets/vendors/charting_library/',
       locale: 'en',
@@ -129,6 +130,7 @@ export class TvComponent implements OnInit, OnDestroy {
                   listed_exchange: '',
                   timezone: 'America/New_York',
                   minmov: 1,
+                  format: 'price',
                   pricescale: 100,
                   supported_resolutions: ['1', '3', '5', '30', '60', '120', '240', '360', 'D'],
                 });
