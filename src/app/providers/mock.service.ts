@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, Observer, interval, Subscription } from 'rxjs';
-import { map, mergeMap, switchMap, take } from 'rxjs/operators';
+import { last, map, mergeMap, switchMap, take } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { Bar } from 'src/assets/vendors/charting_library/charting_library.min';
 
 interface BarData {
   ativo: string;
@@ -20,6 +21,7 @@ export class MockService {
   static dataIndex = 0;
   static lastBarTimestamp: number;
   static symbol;
+  static lastBar : BarData;
 
   static dataGenerator(time = +new Date()): BarData {
     return;
@@ -54,10 +56,10 @@ export class MockService {
       data.forEach(obj => {
         let barData = this.toBarData(obj);
         MockService.lastBarTimestamp = barData.time;
+        MockService.lastBar = barData;
         list.push(barData);        
       })
-      list = list.filter(barData => barData.ativo == MockService.symbol);
-      MockService.dataIndex = list.length - 1;
+      list = list.filter(barData => barData.ativo == MockService.symbol);      
       return list;
     }),
     switchMap( data => new Observable((ob: Observer<any>) => {
@@ -95,30 +97,30 @@ export class MockService {
         .pipe(
         mergeMap(() => this.getJsonFile()),
         map((data) => {
-            
-            let list = []
-            data.forEach(obj => {
-              let barData : BarData = this.toBarData(obj);  
-              list.push(barData);
-            })
-            
-            list = list.filter(barData => barData.time > MockService.lastBarTimestamp && barData.ativo == MockService.symbol);
-            
-            if(list.length > 0) {
-              let barData = list[list.length - 1];    
-              if (barData.time - MockService.lastBarTimestamp >= granularity) {
-                MockService.lastBarTimestamp += granularity;    
-              } 
-              return {
-                time: MockService.lastBarTimestamp,
-                open: barData.open,
-                close: barData.close,
-                low: barData.low,
-                high: barData.high,
-                volume: barData.volume,
-              }; 
+            if(data != null) {
+              let list = []
+              data.forEach(obj => {
+                let barData : BarData = this.toBarData(obj);  
+                list.push(barData);
+              })
+              
+              list = list.filter(barData => barData.time >= MockService.lastBarTimestamp && barData.ativo == MockService.symbol);
+              
+              if(list.length > 0) {
+                let barData = list[list.length - 1];    
+                if (barData.time - MockService.lastBarTimestamp >= granularity) {
+                  MockService.lastBarTimestamp += (barData.time % MockService.lastBarTimestamp);    
+                } 
+                return {
+                  time: MockService.lastBarTimestamp,
+                  open: barData.open,
+                  close: barData.close,
+                  low: barData.low,
+                  high: barData.high,
+                  volume: barData.volume,
+                }; 
             }
-        })  
+        }})  
           
         )
         .subscribe(x => {

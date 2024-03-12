@@ -50,7 +50,7 @@ export class TvComponent implements OnInit, OnDestroy {
       // debug: true, // uncomment this line to see Library errors and warnings in the console
       fullscreen: true,
       symbol: this.symbol,
-      interval: '5',
+      interval: '1',
       container_id: 'tradingview',
       library_path: 'assets/vendors/charting_library/',
       locale: 'en',
