@@ -44,7 +44,7 @@ export class MockService {
 
   getJsonFile(): Observable<any[]> {
     const salt = (new Date()).getTime();
-    return this.http.get<any[]>("http://localhost:3000/btc-181123_2006-181124_0105.json?"+salt);
+    return this.http.get<any[]>("http://localhost:3000/" + salt + ".json");
     
   }
  getHistoryList(param): Observable<BarData[]> {
@@ -56,7 +56,7 @@ export class MockService {
       data.forEach(obj => {
         let barData = this.toBarData(obj);
         MockService.lastBarTimestamp = barData.time;
-        MockService.lastBar = barData;
+        MockService.lastBar = barData;        
         list.push(barData);        
       })
       list = list.filter(barData => barData.ativo == MockService.symbol);      
@@ -104,21 +104,38 @@ export class MockService {
                 list.push(barData);
               })
               
-              list = list.filter(barData => barData.time >= MockService.lastBarTimestamp && barData.ativo == MockService.symbol);
+              list = list.filter(barData => barData.time > MockService.lastBarTimestamp && barData.ativo == MockService.symbol);
               
               if(list.length > 0) {
+                list = list.sort((a, b) => b.time - a.time);
                 let barData = list[list.length - 1];    
-                if (barData.time - MockService.lastBarTimestamp >= granularity) {
-                  MockService.lastBarTimestamp += (barData.time % MockService.lastBarTimestamp);    
-                } 
-                return {
-                  time: MockService.lastBarTimestamp,
-                  open: barData.open,
-                  close: barData.close,
-                  low: barData.low,
-                  high: barData.high,
-                  volume: barData.volume,
-                }; 
+                let timestamp = Math.floor(barData.time/granularity) * granularity;
+                MockService.lastBarTimestamp = barData.time;                
+                if (timestamp - MockService.lastBar.time > granularity) {
+                  MockService.lastBar = barData;
+                  MockService.lastBar.time += (timestamp % MockService.lastBarTimestamp);    
+                  return {
+                    time: MockService.lastBar.time,
+                    open: barData.close,
+                    close: barData.close,
+                    low: barData.close,
+                    high: barData.close,
+                    volume: barData.volume,  
+                  }
+                } else if (timestamp - MockService.lastBar.time == 0) {                  
+                  MockService.lastBar.high = MockService.lastBar.high > barData.close ? MockService.lastBar.high :  barData.close;
+                  MockService.lastBar.low = MockService.lastBar.low < barData.close ? MockService.lastBar.low :  barData.close;
+                  MockService.lastBar.close = barData.close;
+                  MockService.lastBar.volume = barData.volume - MockService.lastBar.volume;
+                  return {
+                    time: MockService.lastBar.time,
+                    open: MockService.lastBar.open,
+                    close: MockService.lastBar.close,
+                    low: MockService.lastBar.low,
+                    high: MockService.lastBar.high,
+                    volume: MockService.lastBar.volume,  
+                  }
+                }  
             }
         }})  
           
