@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { TvComponent } from './tv/tv.component';
+import { DatePipe } from '@angular/common'
 
 @NgModule({
   declarations: [
@@ -14,7 +15,7 @@ import { TvComponent } from './tv/tv.component';
     BrowserModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
