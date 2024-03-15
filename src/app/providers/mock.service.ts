@@ -24,6 +24,7 @@ export class MockService {
   static symbol;
   static lastBar : BarData;
   static datalength: number;
+  static proc : boolean; 
 
   static dataGenerator(time = +new Date()): BarData {
     const obj: any = {};
@@ -102,34 +103,36 @@ fakeWebSocket() {
     const duration = 1e3;
     subscription = interval(duration)
       .pipe(
-        /*
-         * mock data, no need to care about the logic if you use server data
-         * the point is the time of the data
-         * data.time === last.time => update
-         * data.time !== last.time => draw new bar
-         */
-        map(() => {
-          const currentTimestamp = +new Date();
-          let timestamp = Math.floor(currentTimestamp/granularity) * granularity;          
-          if (timestamp > MockService.lastBar.time) {
-            /* time goes to next, generate new one */
-            let obj = MockService.lastBar;
-            obj.time = timestamp;           
-            obj.open = obj.close;
-            obj.high = obj.close;
-            obj.low = obj.close;
-            MockService.lastBar = obj;
-            return obj;
-          } else {
-            /* simulate real time update, update the one that last time returned */
+        switchMap(() => this.getJsonFile({ativo : MockService.symbol, time : new Date(MockService.lastBarTimestamp - (3*60*60*1000) )})),
+        map((data) => {          
+          if(data && data.length > 0) {
             
-            const priceChanged = Math.random() < 0.5 ? Math.random()* -1 : Math.random(); // make price change in same step
-            MockService.lastBar.close += priceChanged;
-            MockService.lastBar.high = MockService.lastBar.high > MockService.lastBar.close ? MockService.lastBar.high : MockService.lastBar.close;
-            MockService.lastBar.low = MockService.lastBar.low < MockService.lastBar.close ? MockService.lastBar.low : MockService.lastBar.close;
-            MockService.lastBar.volume += priceChanged;
-            return MockService.lastBar;
+            data.forEach(obj => {
+              let barData = this.toBarData(obj);
+              MockService.lastBarTimestamp = barData.time;
+              let timestamp = Math.floor(barData.time/granularity) * granularity;        
+              if (timestamp > MockService.lastBar.time) {
+                MockService.lastBar = barData;
+                MockService.lastBar.time = timestamp;                
+              } else {
+                MockService.lastBar.close = barData.close;
+                MockService.lastBar.high = MockService.lastBar.high > barData.close ? MockService.lastBar.high : barData.close;
+                MockService.lastBar.low = MockService.lastBar.low < barData.close ? MockService.lastBar.low : barData.close;
+                MockService.lastBar.volume = barData.volume;
+                return MockService.lastBar;
+              }
+            });
+          } else {
+            let timestamp = MockService.lastBarTimestamp + granularity;
+            if (timestamp > MockService.lastBar.time && !MockService.proc) {
+                MockService.proc = true;
+                MockService.lastBar.time = timestamp;
+              
+            } else {
+              return MockService.lastBar;
+            }
           }
+          
         })
       )
       .subscribe(x => {
