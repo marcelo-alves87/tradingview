@@ -64,6 +64,7 @@ export class MockService {
         let barData = this.toBarData(obj);
         list.push(barData);        
       })
+      list.splice(list.length - 1,1);
       let barData = list[list.length - 1];    
       MockService.lastBar = barData;
       MockService.lastBarTimestamp = barData.time;
