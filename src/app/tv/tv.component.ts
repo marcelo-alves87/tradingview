@@ -32,6 +32,27 @@ export class TvComponent implements OnInit, OnDestroy {
   constructor(private mockService: MockService) {
   }
 
+  save() {
+    let obj = this.tradingview.chart(0);
+    
+    this.tradingview.save(obj => {
+      const newBlob = new Blob([JSON.stringify(obj.charts[0])], { type: "application/json" });
+      const data = window.URL.createObjectURL(newBlob);
+      const link = document.createElement("a");
+      link.href = data;
+      link.download = 'Chart.js'; // set a name for the file
+      link.click();
+    });
+  }
+
+  handleFileInput(files: FileList) {
+    let fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      this.tradingview.load(JSON.parse(fileReader.result as string));      
+    }
+    fileReader.readAsText(files.item(0));
+  }
+
   ngOnInit() {
     this.ws = this.mockService.fakeWebSocket();
 
@@ -41,7 +62,7 @@ export class TvComponent implements OnInit, OnDestroy {
     };
   }
 
-  ngOnDestroy() {
+  ngOnDestroy() {    
     this.ws.close();
   }
 
@@ -84,7 +105,7 @@ export class TvComponent implements OnInit, OnDestroy {
         'remove_library_container_border',
       ],
       // enabled_features: ['study_templates'],
-      // charts_storage_url: 'http://saveload.tradingview.com',
+      charts_storage_url: 'http://localhost:3000',
       charts_storage_api_version: '1.1',
       client_id: 'tradingview.com',
       user_id: 'public_user_id',
@@ -165,5 +186,6 @@ export class TvComponent implements OnInit, OnDestroy {
         searchSymbols: () => { /* ts: required method */ },
       },
     });
+    
   }
 }
