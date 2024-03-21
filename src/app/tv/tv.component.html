@@ -1,7 +1,9 @@
+<div style="display: flex;">
 <button (click)="save()">Save</button>
 <div class="form-group">    
     <input type="file"
            id="file"
            (change)="handleFileInput($event.target.files)">
+</div>
 </div>
 <div id="tradingview"></div>
