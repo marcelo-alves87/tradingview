@@ -40,7 +40,7 @@ export class TvComponent implements OnInit, OnDestroy {
       const data = window.URL.createObjectURL(newBlob);
       const link = document.createElement("a");
       link.href = data;
-      link.download = 'Chart.js'; // set a name for the file
+      link.download = this.symbol + '.json'; // set a name for the file
       link.click();
     });
   }
