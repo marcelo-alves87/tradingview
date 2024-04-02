@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MockService } from '../providers/mock.service';
 import { timer } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { Title } from '@angular/platform-browser';
 
 
 @Component({
@@ -29,7 +30,8 @@ export class TvComponent implements OnInit, OnDestroy {
     'D': 86400
   };
 
-  constructor(private mockService: MockService) {
+  constructor(private mockService: MockService, private titleService: Title) {
+    
   }
 
   save() {
@@ -54,6 +56,7 @@ export class TvComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.titleService.setTitle(this.symbol);
     this.ws = this.mockService.fakeWebSocket();
 
     this.ws.onopen = () => {
