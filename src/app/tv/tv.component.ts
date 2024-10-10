@@ -35,7 +35,7 @@ export class TvComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    let obj = this.tradingview.chart(0);
+    /*let obj = this.tradingview.chart(0);
     
     this.tradingview.save(obj => {
       const newBlob = new Blob([JSON.stringify(obj.charts[0])], { type: "application/json" });
@@ -44,6 +44,14 @@ export class TvComponent implements OnInit, OnDestroy {
       link.href = data;
       link.download = this.symbol + '.json'; // set a name for the file
       link.click();
+    });*/
+
+    // Assume you already have a chart object initialized
+    const chart = this.tradingview.activeChart();
+
+    // Function to add RSI indicator with a period of 14
+    chart.createStudy('Relative Strength Index', false, false, [14], null, {
+        'Plot.color': '#FF0000' // Color the RSI line as red
     });
   }
 
@@ -187,8 +195,133 @@ export class TvComponent implements OnInit, OnDestroy {
           this.ws.send('stop receiving data or just close websocket');
         },
         searchSymbols: () => { /* ts: required method */ },
-      },
-    });
-    
-  }
+    },
+
+    custom_indicators_getter: function (PineJS) {
+      return Promise.resolve([
+        {
+          name: "MACD",
+          metainfo: {
+            _metainfoVersion: 51,
+        
+            id: "MACD@tv-basicstudies-1",
+            name: "MACD",
+            description: "MACD - Moving Average Convergence Divergence",
+            shortDescription: "MACD",
+        
+            isCustomIndicator: true,
+            isTVScript: false,
+            isTVScriptStub: false,
+        
+            format: {
+              type: "price",
+              precision: 4,
+            },
+        
+            defaults: {
+              palettes: {
+                palette_0: {
+                  // Default colors for the histogram
+                  colors: [{ color: "#00FF00" }, { color: "#FF0000" }],
+                },
+              },
+            },
+        
+            inputs: [
+              {
+                name: "fastLength",
+                type: "integer",
+                defval: 12,
+                min: 1,
+                max: 100,
+                title: "Fast Length"
+              },
+              {
+                name: "slowLength",
+                type: "integer",
+                defval: 26,
+                min: 1,
+                max: 100,
+                title: "Slow Length"
+              },
+              {
+                name: "signalLength",
+                type: "integer",
+                defval: 9,
+                min: 1,
+                max: 100,
+                title: "Signal Length"
+              },
+            ],
+        
+            plots: [
+              {
+                id: "macdLine",
+                title: "MACD Line",
+                type: "line",
+                color: "#FF0000",
+                linewidth: 2
+              },
+              {
+                id: "signalLine",
+                title: "Signal Line",
+                type: "line",
+                color: "#00FF00",
+                linewidth: 2
+              },
+              {
+                id: "histogram",
+                title: "Histogram",
+                type: "histogram",
+                palette: "palette_0", // Use palette for colorizing the histogram
+              },
+            ],
+        
+            palettes: {
+              palette_0: {
+                colors: [{ name: "Positive" }, { name: "Negative" }],
+                valToIndex: {
+                  100: 0, // Maps positive value to green color
+                  200: 1, // Maps negative value to red color
+                },
+              },
+            },
+          },
+        
+          constructor: function () {
+            this.main = function (context, input) {
+              this._context = context;
+              this._input = input;
+        
+              var macdLine = this._input[0];  // Placeholder for actual MACD line calculation
+              var signalLine = this._input[1];  // Placeholder for actual signal line calculation
+        
+              // Example condition: if MACD is greater than the signal line, it's positive
+              var valueForPositive = 100;
+              var valueForNegative = 200;
+        
+              var result = macdLine > signalLine ? valueForPositive : valueForNegative;
+        
+              return [result];
+            };
+          },
+        },
+      ]);
+    },
+  });
+
+  // Call your method when the chart is ready
+      this.tradingview.onChartReady(() => {
+        this.tradingview.chart().createStudy("MACD", false, false);
+        
+        // Function to add RSI indicator with a period of 14
+        this.tradingview.chart().createStudy('Relative Strength Index', false, false, [14], null, {
+          'Plot.color': '#FF0000', // Color the RSI line as red
+        
+        });
+
+  
+              
+      });
+    }
 }
