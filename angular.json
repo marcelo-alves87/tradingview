@@ -74,18 +74,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "tradingview-angular-example:build"
+            "buildTarget": "tradingview-angular-example:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "tradingview-angular-example:build:production"
+              "buildTarget": "tradingview-angular-example:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "tradingview-angular-example:build"
+            "buildTarget": "tradingview-angular-example:build"
           }
         },
         "test": {
