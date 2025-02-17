@@ -6,9 +6,10 @@ import { Title } from '@angular/platform-browser';
 
 
 @Component({
-  selector: 'app-tv',
-  templateUrl: './tv.component.html',
-  styleUrls: ['./tv.component.scss']
+    selector: 'app-tv',
+    templateUrl: './tv.component.html',
+    styleUrls: ['./tv.component.scss'],
+    standalone: false
 })
 export class TvComponent implements OnInit, OnDestroy {
   @Input() symbol;
@@ -66,6 +67,7 @@ export class TvComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.titleService.setTitle(this.symbol);
     this.ws = this.mockService.fakeWebSocket();
+    
 
     this.ws.onopen = () => {
       console.log('fake websocket: onopen');
@@ -78,7 +80,8 @@ export class TvComponent implements OnInit, OnDestroy {
   }
 
   drawTv() {
-    this.tradingview = new window.TradingView.widget({
+
+   this.tradingview = new (window as any).TradingView.widget({
       // debug: true, // uncomment this line to see Library errors and warnings in the console
       fullscreen: true,
       symbol: this.symbol,
@@ -90,7 +93,7 @@ export class TvComponent implements OnInit, OnDestroy {
         // 'timeframes_toolbar',
         // 'go_to_date',
         // 'use_localstorage_for_settings',
-        'volume_force_overlay',
+        //'volume_force_overlay',
         // 'show_interval_dialog_on_key_press',
         'symbol_search_hot_key',
         'study_dialog_search_control',
@@ -120,7 +123,7 @@ export class TvComponent implements OnInit, OnDestroy {
       charts_storage_api_version: '1.1',
       client_id: 'tradingview.com',
       user_id: 'public_user_id',
-      timezone: 'America/Sao_Paulo',
+      timezone: 'America/Buenos_Aires',
       datafeed: {
         onReady(x) {
           timer(0)
@@ -197,122 +200,12 @@ export class TvComponent implements OnInit, OnDestroy {
         searchSymbols: () => { /* ts: required method */ },
     },
 
-    custom_indicators_getter: function (PineJS) {
-      return Promise.resolve([
-        {
-          name: "MACD",
-          metainfo: {
-            _metainfoVersion: 51,
-        
-            id: "MACD@tv-basicstudies-1",
-            name: "MACD",
-            description: "MACD - Moving Average Convergence Divergence",
-            shortDescription: "MACD",
-        
-            isCustomIndicator: true,
-            isTVScript: false,
-            isTVScriptStub: false,
-        
-            format: {
-              type: "price",
-              precision: 4,
-            },
-        
-            defaults: {
-              palettes: {
-                palette_0: {
-                  // Default colors for the histogram
-                  colors: [{ color: "#00FF00" }, { color: "#FF0000" }],
-                },
-              },
-            },
-        
-            inputs: [
-              {
-                name: "fastLength",
-                type: "integer",
-                defval: 12,
-                min: 1,
-                max: 100,
-                title: "Fast Length"
-              },
-              {
-                name: "slowLength",
-                type: "integer",
-                defval: 26,
-                min: 1,
-                max: 100,
-                title: "Slow Length"
-              },
-              {
-                name: "signalLength",
-                type: "integer",
-                defval: 9,
-                min: 1,
-                max: 100,
-                title: "Signal Length"
-              },
-            ],
-        
-            plots: [
-              {
-                id: "macdLine",
-                title: "MACD Line",
-                type: "line",
-                color: "#FF0000",
-                linewidth: 2
-              },
-              {
-                id: "signalLine",
-                title: "Signal Line",
-                type: "line",
-                color: "#00FF00",
-                linewidth: 2
-              },
-              {
-                id: "histogram",
-                title: "Histogram",
-                type: "histogram",
-                palette: "palette_0", // Use palette for colorizing the histogram
-              },
-            ],
-        
-            palettes: {
-              palette_0: {
-                colors: [{ name: "Positive" }, { name: "Negative" }],
-                valToIndex: {
-                  100: 0, // Maps positive value to green color
-                  200: 1, // Maps negative value to red color
-                },
-              },
-            },
-          },
-        
-          constructor: function () {
-            this.main = function (context, input) {
-              this._context = context;
-              this._input = input;
-        
-              var macdLine = this._input[0];  // Placeholder for actual MACD line calculation
-              var signalLine = this._input[1];  // Placeholder for actual signal line calculation
-        
-              // Example condition: if MACD is greater than the signal line, it's positive
-              var valueForPositive = 100;
-              var valueForNegative = 200;
-        
-              var result = macdLine > signalLine ? valueForPositive : valueForNegative;
-        
-              return [result];
-            };
-          },
-        },
-      ]);
-    },
+    
   });
 
   // Call your method when the chart is ready
       this.tradingview.onChartReady(() => {
-        this.tradingview.chart().createStudy("MACD", false, false);
+        
         
         // Function to add RSI indicator with a period of 14
         this.tradingview.chart().createStudy('Relative Strength Index', false, false, [14], null, {
