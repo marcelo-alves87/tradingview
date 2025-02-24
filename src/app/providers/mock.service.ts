@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, Observer, interval, Subscription } from 'rxjs';
-import { map, mergeMap, switchMap, take } from 'rxjs/operators';
+import { Observable, of, interval, Subscription } from 'rxjs';
+import { map, switchMap, take } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { DatePipe } from '@angular/common';
-
 
 interface BarData {
   ativo: string;
@@ -16,136 +14,112 @@ interface BarData {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MockService {
-  static dataIndex = 0;
-  static lastBarTimestamp: number;
-  static symbol;
-  static lastBar : BarData;
-  static datalength: number;
-  static proc : boolean; 
+  private lastBar!: BarData;
+  private lastBarTimestamp: number = 0;
+  private symbol: string = '';
+  private dataLength: number = 0;
+  private processing: boolean = false;
+  private subscription?: Subscription;
 
-  static dataGenerator(time = +new Date()): BarData {
-    const obj: any = {};
-    Object.assign(obj, MockService.lastBar, { time });
-    ++this.dataIndex >= MockService.datalength && (this.dataIndex = 0);
-    return obj;
+  constructor(private http: HttpClient) {}
+
+  private toBarData(obj: any): BarData {
+    return {
+      ativo: obj.ativo,
+      time: new Date(obj.time).getTime() + 3 * 60 * 60 * 1000, // Adjust timezone
+      open: obj.open,
+      high: obj.high,
+      low: obj.low,
+      close: obj.close,
+      volume: obj.volume,
+    };
   }
 
-  constructor(private http: HttpClient, private datepipe: DatePipe) {
+  private getJsonFile(params: { time: number; ativo: string }): Observable<BarData[]> {
+    return this.http.get<BarData[]>(`http://localhost:3000/data.json?time=${params.time}&ativo=${params.ativo}`);
   }
 
-  toBarData(obj): BarData {
-    let barData = {} as  BarData;
-    barData.ativo = obj.ativo;
-    barData.time = new Date(obj.time).getTime() + (3*60*60*1000);  
-    barData.open = obj.open;
-    barData.high = obj.high;
-    barData.low = obj.low;
-    barData.close = obj.close;
-    barData.volume = obj.volume;
-    return barData;
-  }
+  getHistoryList({ param }: { param: { granularity: any; startTime; endTime: any; symbol: { name: string; }; }; }): Observable<BarData[]> {
+    this.symbol = param.symbol.name;
 
-  getJsonFile(params): Observable<any[]> {
-    const salt = (new Date()).getTime();
-    return this.http.get<any[]>("http://localhost:3000/" + salt + ".json?time=" + params.time + "&ativo=" + params.ativo);
-    
-  }
+    return this.getJsonFile({ time: 0, ativo: this.symbol }).pipe(
+      take(1),
+      map((data) => {
+        const list = data.map((obj) => this.toBarData(obj));
+        if (list.length > 1) list.pop(); // Remove last element if needed
 
- getHistoryList(param): Observable<BarData[]> {
-  MockService.symbol = param.symbol.name;  
-  return this.getJsonFile({ time: 0, ativo : MockService.symbol }).pipe(
-    take(1),
-    map( data => {
-      let list = [];
-      data.forEach(obj => {
-        let barData = this.toBarData(obj);
-        list.push(barData);        
+        if (list.length > 0) {
+          this.lastBar = list[list.length - 1];
+          this.lastBarTimestamp = this.lastBar.time;
+          this.dataLength = list.length;
+        }
+
+        return list;
       })
-      list.splice(list.length - 1,1);
-      let barData = list[list.length - 1];    
-      MockService.lastBar = barData;
-      MockService.lastBarTimestamp = barData.time;
-      MockService.datalength = list.length;      
-      return list;
-    }),
-    switchMap( data => new Observable((ob: Observer<any>) => {
-      ob.next(data);
-      ob.complete();
-    }))
-  );
+    );
+  }
 
-}
+  fakeWebSocket() {
+    let granularity = 0;
 
-fakeWebSocket() {
-  let granularity: number;
-  let subscription: Subscription;
+    const ws: any = {
+      send: (message: string) => {
+        const matched = message.match(/.+_kline_(\d+)/);
+        if (matched) {
+          granularity = +matched[1] * 1e3;
+          this.startDataFeed(granularity, ws);
+        } else {
+          this.subscription?.unsubscribe();
+        }
+      },
+      close: () => {
+        this.subscription?.unsubscribe();
+      },
+    };
 
-  const ws: any = {
-    send(message: string) {
-      const matched = message.match(/.+_kline_(\d+)/);
+    setTimeout(() => ws.onopen?.(), 1000); // Simulate WebSocket opening
 
-      // if matched, then send data based on granularity
-      // else unsubscribe, which means to close connection in this example
-      if (matched) {
-        granularity = +matched[1] * 1e3;
-        sendData();
-      } else {
-        subscription.unsubscribe();
-      }
-    },
-    close() {
-    }
-  };
+    return ws;
+  }
 
-  const sendData = () => {
-    const duration = 1e3;
-    subscription = interval(duration)
+  private startDataFeed(granularity: number, ws: any) {
+    this.subscription = interval(1000)
       .pipe(
-        switchMap(() => this.getJsonFile({ativo : MockService.symbol, time : new Date(MockService.lastBarTimestamp - (3*60*60*1000) )})),
-        map((data) => {          
-          if(data && data.length > 0) {
+        switchMap(() => this.getJsonFile({ ativo: this.symbol, time: this.lastBarTimestamp - 3 * 60 * 60 * 1000 })),
+        map((data) => {
+          if (!data.length) return this.handleEmptyData(granularity);
+
+          data.forEach((obj) => {
+            const barData = this.toBarData(obj);
+            this.lastBarTimestamp = barData.time;
+
+            const timestamp = Math.floor(barData.time / granularity) * granularity;
             
-            data.forEach(obj => {
-              let barData = this.toBarData(obj);
-              MockService.lastBarTimestamp = barData.time;
-              let timestamp = Math.floor(barData.time/granularity) * granularity;        
-              if (timestamp > MockService.lastBar.time) {
-                MockService.lastBar = barData;
-                MockService.lastBar.time = timestamp;                
-              } else {
-                MockService.lastBar.close = barData.close;
-                MockService.lastBar.high = MockService.lastBar.high > barData.close ? MockService.lastBar.high : barData.close;
-                MockService.lastBar.low = MockService.lastBar.low < barData.close ? MockService.lastBar.low : barData.close;
-                MockService.lastBar.volume = barData.volume;
-                return MockService.lastBar;
-              }
-            });
-          } else {
-            let timestamp = MockService.lastBarTimestamp + granularity;
-            if (timestamp > MockService.lastBar.time && !MockService.proc) {
-                MockService.proc = true;
-                MockService.lastBar.time = timestamp;
-              
+            if (timestamp > this.lastBar.time) {
+              this.lastBar = { ...barData, time: timestamp };
             } else {
-              return MockService.lastBar;
+              this.lastBar.close = barData.close;
+              this.lastBar.high = barData.high;
+              this.lastBar.low = barData.low;
+              this.lastBar.volume = barData.volume;
             }
-          }
-          
+          });
+
+          return this.lastBar;
         })
       )
-      .subscribe(x => {
-        ws.onmessage && ws.onmessage(x);
-      });
-  };
+      .subscribe((x) => ws.onmessage?.(x));
+  }
 
-  // simulate open websocket after one second
-  setTimeout(() => {
-    ws.onopen();
-  }, 1e3);
-
-  return ws;
-}
+  private handleEmptyData(granularity: number) {
+    const timestamp = this.lastBarTimestamp + granularity;
+    if (timestamp > this.lastBar.time && !this.processing) {
+      this.processing = true;
+      this.lastBar.time = timestamp;
+    }
+    return this.lastBar;
+  }
 }

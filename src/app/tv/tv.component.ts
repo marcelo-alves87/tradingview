@@ -139,10 +139,12 @@ export class TvComponent implements OnInit, OnDestroy {
           const [symbol, granularity, startTime, endTime, onResult, onError, isFirst] = args;
           console.log('[getBars]:', args);
           this.mockService.getHistoryList({
-            granularity: this.granularityMap[granularity],
-            startTime,
-            endTime,
-            symbol
+            param: {
+              granularity: this.granularityMap[granularity],
+              startTime,
+              endTime,
+              symbol
+            }
           }).subscribe((data: any) => {
             // push the history data to callback
             onResult(data, { noData: false });
