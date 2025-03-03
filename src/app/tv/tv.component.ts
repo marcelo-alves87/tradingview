@@ -36,24 +36,28 @@ export class TvComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    /*let obj = this.tradingview.chart(0);
+    let obj = this.tradingview.activeChart();
+    const now = new Date();
+    const timestamp = now.getFullYear() + 
+      ("0" + (now.getMonth() + 1)).slice(-2) + 
+      ("0" + now.getDate()).slice(-2) + "_" + 
+      ("0" + now.getHours()).slice(-2) + 
+      ("0" + now.getMinutes()).slice(-2) + 
+      ("0" + now.getSeconds()).slice(-2);
+
+
+
     
     this.tradingview.save(obj => {
       const newBlob = new Blob([JSON.stringify(obj.charts[0])], { type: "application/json" });
       const data = window.URL.createObjectURL(newBlob);
       const link = document.createElement("a");
       link.href = data;
-      link.download = this.symbol + '.json'; // set a name for the file
+      link.download = this.symbol + '_layout_' + timestamp + '.json';
       link.click();
-    });*/
-
-    // Assume you already have a chart object initialized
-    const chart = this.tradingview.activeChart();
-
-    // Function to add RSI indicator with a period of 14
-    chart.createStudy('Relative Strength Index', false, false, [14], null, {
-        'Plot.color': '#FF0000' // Color the RSI line as red
     });
+
+   
   }
 
   handleFileInput(files: FileList) {
@@ -209,13 +213,7 @@ export class TvComponent implements OnInit, OnDestroy {
       this.tradingview.onChartReady(() => {
         
         
-        // Function to add RSI indicator with a period of 14
-        this.tradingview.chart().createStudy('Relative Strength Index', false, false, [14], null, {
-          'Plot.color': '#FF0000', // Color the RSI line as red
-        
-        });
-
-  
+         
               
       });
     }
