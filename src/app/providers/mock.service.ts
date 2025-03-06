@@ -115,6 +115,17 @@ export class MockService {
   }
 
   private handleEmptyData(granularity: number) {
+    if (!this.lastBar) {
+      this.lastBar = {
+        ativo: this.symbol,
+        time: Date.now(),
+        open: 0,
+        high: 0,
+        low: 0,
+        close: 0,
+        volume: 0
+      };
+    }
     const timestamp = this.lastBarTimestamp + granularity;
     if (timestamp > this.lastBar.time && !this.processing) {
       this.processing = true;
