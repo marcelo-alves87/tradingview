@@ -213,7 +213,11 @@ export class TvComponent implements OnInit, OnDestroy {
       this.tradingview.onChartReady(() => {
         
         
-         
+         // Function to add RSI indicator with a period of 14
+        this.tradingview.chart().createStudy('Order Book Imbalance', false, false, [], null, {
+          'Plot.color': '#FF0000', // Color the RSI line as red
+        
+        });
               
       });
     }
