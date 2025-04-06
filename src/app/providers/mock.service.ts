@@ -11,10 +11,16 @@ interface BarData {
   low: number;
   close: number;
   volume: number;
-  AvgBuyPrice: number,
-  AvgSellPrice: number,
-  AvgBuyQty: number,
-  AvgSellQty: number
+  AvgBuyPrice_Open: number,  
+  AvgBuyPrice_High: number,
+  AvgBuyPrice_Low: number,
+  AvgBuyPrice_Close: number,
+  AvgSellPrice_Open: number,
+  AvgSellPrice_High: number,
+  AvgSellPrice_Low: number,
+  AvgSellPrice_Close: number,
+  AvgBuyQty_Close: number,
+  AvgSellQty_Close: number
 }
 
 @Injectable({
@@ -39,10 +45,16 @@ export class MockService {
       low: obj.low,
       close: obj.close,
       volume: obj.volume,
-      AvgBuyPrice: obj.AvgBuyPrice ?? 0,
-      AvgSellPrice: obj.AvgSellPrice ?? 0,
-      AvgBuyQty: obj.AvgBuyQty ?? 0,
-      AvgSellQty: obj.AvgSellQty ?? 0,
+      AvgBuyPrice_Open: obj.AvgBuyPrice_Open ?? 0,  
+      AvgBuyPrice_High: obj.AvgBuyPrice_High ?? 0,
+      AvgBuyPrice_Low: obj.AvgBuyPrice_Low ?? 0,
+      AvgBuyPrice_Close: obj.AvgBuyPrice_Close ?? 0,
+      AvgSellPrice_Open: obj.AvgSellPrice_Open ?? 0,  
+      AvgSellPrice_High: obj.AvgSellPrice_High ?? 0,
+      AvgSellPrice_Low: obj.AvgSellPrice_Low ?? 0,
+      AvgSellPrice_Close: obj.AvgSellPrice_Close ?? 0,      
+      AvgBuyQty_Close: obj.AvgBuyQty_Close ?? 0,
+      AvgSellQty_Close: obj.AvgSellQty_Close ?? 0,
     };
   }
 
@@ -113,10 +125,16 @@ export class MockService {
               this.lastBar.high = barData.high;
               this.lastBar.low = barData.low;
               this.lastBar.volume = barData.volume;
-              this.lastBar.AvgBuyPrice = barData.AvgBuyPrice;
-              this.lastBar.AvgSellPrice = barData.AvgSellPrice;
-              this.lastBar.AvgBuyQty = barData.AvgBuyQty;
-              this.lastBar.AvgSellQty = barData.AvgSellQty;
+              this.lastBar.AvgBuyPrice_Open = barData.AvgBuyPrice_Open;  
+              this.lastBar.AvgBuyPrice_High = barData.AvgBuyPrice_High;
+              this.lastBar.AvgBuyPrice_Low = barData.AvgBuyPrice_Low;
+              this.lastBar.AvgBuyPrice_Close = barData.AvgBuyPrice_Close;
+              this.lastBar.AvgSellPrice_Open =  barData.AvgSellPrice_Open;  
+              this.lastBar.AvgSellPrice_High = barData.AvgSellPrice_High;
+              this.lastBar.AvgSellPrice_Low = barData.AvgSellPrice_Low;
+              this.lastBar.AvgSellPrice_Close = barData.AvgSellPrice_Close;  
+              this.lastBar.AvgBuyQty_Close = barData.AvgBuyQty_Close;
+              this.lastBar.AvgSellQty_Close = barData.AvgSellQty_Close;
             }
           });
 
@@ -136,10 +154,16 @@ export class MockService {
         low: 0,
         close: 0,
         volume: 0,
-        AvgBuyPrice: 0,
-        AvgSellPrice: 0,
-        AvgBuyQty: 0,
-        AvgSellQty: 0
+        AvgBuyPrice_Open: 0,  
+        AvgBuyPrice_High: 0,
+        AvgBuyPrice_Low: 0,
+        AvgBuyPrice_Close: 0,
+        AvgSellPrice_Open: 0,
+        AvgSellPrice_High: 0,
+        AvgSellPrice_Low: 0,
+        AvgSellPrice_Close: 0,
+        AvgBuyQty_Close: 0,
+        AvgSellQty_Close: 0
       };
     }
     const timestamp = this.lastBarTimestamp + granularity;
