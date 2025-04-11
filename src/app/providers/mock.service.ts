@@ -19,7 +19,13 @@ interface BarData {
   AvgSellPrice_High: number,
   AvgSellPrice_Low: number,
   AvgSellPrice_Close: number,
+  AvgBuyQty_Open: number,
+  AvgBuyQty_High: number,
+  AvgBuyQty_Low: number,
   AvgBuyQty_Close: number,
+  AvgSellQty_Open: number,
+  AvgSellQty_High: number,
+  AvgSellQty_Low: number,
   AvgSellQty_Close: number
 }
 
@@ -52,8 +58,14 @@ export class MockService {
       AvgSellPrice_Open: obj.AvgSellPrice_Open ?? 0,  
       AvgSellPrice_High: obj.AvgSellPrice_High ?? 0,
       AvgSellPrice_Low: obj.AvgSellPrice_Low ?? 0,
-      AvgSellPrice_Close: obj.AvgSellPrice_Close ?? 0,      
+      AvgSellPrice_Close: obj.AvgSellPrice_Close ?? 0,   
+      AvgBuyQty_Open: obj.AvgBuyQty_Open ?? 0,
+      AvgBuyQty_High: obj.AvgBuyQty_High ?? 0,
+      AvgBuyQty_Low: obj.AvgBuyQty_Low ?? 0,   
       AvgBuyQty_Close: obj.AvgBuyQty_Close ?? 0,
+      AvgSellQty_Open: obj.AvgSellQty_Open ?? 0,
+      AvgSellQty_High: obj.AvgSellQty_High ?? 0,
+      AvgSellQty_Low: obj.AvgSellQty_Low ?? 0,
       AvgSellQty_Close: obj.AvgSellQty_Close ?? 0,
     };
   }
@@ -133,7 +145,13 @@ export class MockService {
               this.lastBar.AvgSellPrice_High = barData.AvgSellPrice_High;
               this.lastBar.AvgSellPrice_Low = barData.AvgSellPrice_Low;
               this.lastBar.AvgSellPrice_Close = barData.AvgSellPrice_Close;  
+              this.lastBar.AvgBuyQty_Open = barData.AvgBuyQty_Open;
+              this.lastBar.AvgBuyQty_High = barData.AvgBuyQty_High;
+              this.lastBar.AvgBuyQty_Low = barData.AvgBuyQty_Low;
               this.lastBar.AvgBuyQty_Close = barData.AvgBuyQty_Close;
+              this.lastBar.AvgSellQty_Open = barData.AvgSellQty_Open;
+              this.lastBar.AvgSellQty_High = barData.AvgSellQty_High;
+              this.lastBar.AvgSellQty_Low = barData.AvgSellQty_Low;
               this.lastBar.AvgSellQty_Close = barData.AvgSellQty_Close;
             }
           });
@@ -162,7 +180,13 @@ export class MockService {
         AvgSellPrice_High: 0,
         AvgSellPrice_Low: 0,
         AvgSellPrice_Close: 0,
+        AvgBuyQty_Open: 0,
+        AvgBuyQty_High: 0,
+        AvgBuyQty_Low: 0,
         AvgBuyQty_Close: 0,
+        AvgSellQty_Open: 0,
+        AvgSellQty_High: 0,
+        AvgSellQty_Low: 0,
         AvgSellQty_Close: 0
       };
     }
