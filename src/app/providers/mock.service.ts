@@ -11,22 +11,11 @@ interface BarData {
   low: number;
   close: number;
   volume: number;
-  AvgBuyPrice_Open: number,  
-  AvgBuyPrice_High: number,
-  AvgBuyPrice_Low: number,
-  AvgBuyPrice_Close: number,
-  AvgSellPrice_Open: number,
-  AvgSellPrice_High: number,
-  AvgSellPrice_Low: number,
-  AvgSellPrice_Close: number,
-  AvgBuyQty_Open: number,
-  AvgBuyQty_High: number,
-  AvgBuyQty_Low: number,
-  AvgBuyQty_Close: number,
-  AvgSellQty_Open: number,
-  AvgSellQty_High: number,
-  AvgSellQty_Low: number,
-  AvgSellQty_Close: number
+  OrderBookScore_Open: number,  
+  OrderBookScore_High: number,
+  OrderBookScore_Low: number,
+  OrderBookScore_Close: number
+  
 }
 
 @Injectable({
@@ -51,22 +40,11 @@ export class MockService {
       low: obj.low,
       close: obj.close,
       volume: obj.volume,
-      AvgBuyPrice_Open: obj.AvgBuyPrice_Open ?? 0,  
-      AvgBuyPrice_High: obj.AvgBuyPrice_High ?? 0,
-      AvgBuyPrice_Low: obj.AvgBuyPrice_Low ?? 0,
-      AvgBuyPrice_Close: obj.AvgBuyPrice_Close ?? 0,
-      AvgSellPrice_Open: obj.AvgSellPrice_Open ?? 0,  
-      AvgSellPrice_High: obj.AvgSellPrice_High ?? 0,
-      AvgSellPrice_Low: obj.AvgSellPrice_Low ?? 0,
-      AvgSellPrice_Close: obj.AvgSellPrice_Close ?? 0,   
-      AvgBuyQty_Open: obj.AvgBuyQty_Open ?? 0,
-      AvgBuyQty_High: obj.AvgBuyQty_High ?? 0,
-      AvgBuyQty_Low: obj.AvgBuyQty_Low ?? 0,   
-      AvgBuyQty_Close: obj.AvgBuyQty_Close ?? 0,
-      AvgSellQty_Open: obj.AvgSellQty_Open ?? 0,
-      AvgSellQty_High: obj.AvgSellQty_High ?? 0,
-      AvgSellQty_Low: obj.AvgSellQty_Low ?? 0,
-      AvgSellQty_Close: obj.AvgSellQty_Close ?? 0,
+      OrderBookScore_Open: obj.OrderBookScore_Open ?? 0,  
+      OrderBookScore_High: obj.OrderBookScore_High ?? 0,
+      OrderBookScore_Low: obj.OrderBookScore_Low ?? 0,
+      OrderBookScore_Close: obj.OrderBookScore_Close ?? 0
+      
     };
   }
 
@@ -137,22 +115,10 @@ export class MockService {
               this.lastBar.high = barData.high;
               this.lastBar.low = barData.low;
               this.lastBar.volume = barData.volume;
-              this.lastBar.AvgBuyPrice_Open = barData.AvgBuyPrice_Open;  
-              this.lastBar.AvgBuyPrice_High = barData.AvgBuyPrice_High;
-              this.lastBar.AvgBuyPrice_Low = barData.AvgBuyPrice_Low;
-              this.lastBar.AvgBuyPrice_Close = barData.AvgBuyPrice_Close;
-              this.lastBar.AvgSellPrice_Open =  barData.AvgSellPrice_Open;  
-              this.lastBar.AvgSellPrice_High = barData.AvgSellPrice_High;
-              this.lastBar.AvgSellPrice_Low = barData.AvgSellPrice_Low;
-              this.lastBar.AvgSellPrice_Close = barData.AvgSellPrice_Close;  
-              this.lastBar.AvgBuyQty_Open = barData.AvgBuyQty_Open;
-              this.lastBar.AvgBuyQty_High = barData.AvgBuyQty_High;
-              this.lastBar.AvgBuyQty_Low = barData.AvgBuyQty_Low;
-              this.lastBar.AvgBuyQty_Close = barData.AvgBuyQty_Close;
-              this.lastBar.AvgSellQty_Open = barData.AvgSellQty_Open;
-              this.lastBar.AvgSellQty_High = barData.AvgSellQty_High;
-              this.lastBar.AvgSellQty_Low = barData.AvgSellQty_Low;
-              this.lastBar.AvgSellQty_Close = barData.AvgSellQty_Close;
+              this.lastBar.OrderBookScore_Open = barData.OrderBookScore_Open;  
+              this.lastBar.OrderBookScore_High = barData.OrderBookScore_High;
+              this.lastBar.OrderBookScore_Low = barData.OrderBookScore_Low;
+              this.lastBar.OrderBookScore_Close = barData.OrderBookScore_Close;             
             }
           });
 
@@ -172,22 +138,11 @@ export class MockService {
         low: 0,
         close: 0,
         volume: 0,
-        AvgBuyPrice_Open: 0,  
-        AvgBuyPrice_High: 0,
-        AvgBuyPrice_Low: 0,
-        AvgBuyPrice_Close: 0,
-        AvgSellPrice_Open: 0,
-        AvgSellPrice_High: 0,
-        AvgSellPrice_Low: 0,
-        AvgSellPrice_Close: 0,
-        AvgBuyQty_Open: 0,
-        AvgBuyQty_High: 0,
-        AvgBuyQty_Low: 0,
-        AvgBuyQty_Close: 0,
-        AvgSellQty_Open: 0,
-        AvgSellQty_High: 0,
-        AvgSellQty_Low: 0,
-        AvgSellQty_Close: 0
+        OrderBookScore_Open: 0,  
+        OrderBookScore_High: 0,
+        OrderBookScore_Low: 0,
+        OrderBookScore_Close: 0
+        
       };
     }
     const timestamp = this.lastBarTimestamp + granularity;
