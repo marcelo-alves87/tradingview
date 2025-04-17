@@ -14,7 +14,11 @@ interface BarData {
   OrderBookScore_Open: number,  
   OrderBookScore_High: number,
   OrderBookScore_Low: number,
-  OrderBookScore_Close: number
+  OrderBookScore_Close: number,
+  Spread_Open: number,  
+  Spread_High: number,
+  Spread_Low: number,
+  Spread_Close: number
   
 }
 
@@ -43,7 +47,11 @@ export class MockService {
       OrderBookScore_Open: obj.OrderBookScore_Open ?? 0,  
       OrderBookScore_High: obj.OrderBookScore_High ?? 0,
       OrderBookScore_Low: obj.OrderBookScore_Low ?? 0,
-      OrderBookScore_Close: obj.OrderBookScore_Close ?? 0
+      OrderBookScore_Close: obj.OrderBookScore_Close ?? 0,
+      Spread_Open: obj.Spread_Open ?? 0,  
+      Spread_High: obj.Spread_High ?? 0,
+      Spread_Low: obj.Spread_Low ?? 0,
+      Spread_Close: obj.Spread_Close ?? 0
       
     };
   }
@@ -118,7 +126,11 @@ export class MockService {
               this.lastBar.OrderBookScore_Open = barData.OrderBookScore_Open;  
               this.lastBar.OrderBookScore_High = barData.OrderBookScore_High;
               this.lastBar.OrderBookScore_Low = barData.OrderBookScore_Low;
-              this.lastBar.OrderBookScore_Close = barData.OrderBookScore_Close;             
+              this.lastBar.OrderBookScore_Close = barData.OrderBookScore_Close;  
+              this.lastBar.Spread_Open = barData.Spread_Open;  
+              this.lastBar.Spread_High = barData.Spread_High;
+              this.lastBar.Spread_Low = barData.Spread_Low;
+              this.lastBar.Spread_Close = barData.Spread_Close;             
             }
           });
 
@@ -141,7 +153,11 @@ export class MockService {
         OrderBookScore_Open: 0,  
         OrderBookScore_High: 0,
         OrderBookScore_Low: 0,
-        OrderBookScore_Close: 0
+        OrderBookScore_Close: 0,
+        Spread_Open: 0,  
+        Spread_High: 0,
+        Spread_Low: 0,
+        Spread_Close: 0
         
       };
     }
