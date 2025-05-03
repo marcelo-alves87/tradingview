@@ -11,15 +11,11 @@ interface BarData {
   low: number;
   close: number;
   volume: number;
-  OrderBookScore_Open: number,  
-  OrderBookScore_High: number,
-  OrderBookScore_Low: number,
-  OrderBookScore_Close: number,
-  Spread_Open: number,  
-  Spread_High: number,
-  Spread_Low: number,
-  Spread_Close: number
-  
+  OrderBookScore_Mean: number,  
+  Spread_Mean: number,
+  Pressure_Mean: number,
+  Absorption: number,
+  DeltaDivergence: string   
 }
 
 @Injectable({
@@ -44,15 +40,11 @@ export class MockService {
       low: obj.low,
       close: obj.close,
       volume: obj.volume,
-      OrderBookScore_Open: obj.OrderBookScore_Open ?? 0,  
-      OrderBookScore_High: obj.OrderBookScore_High ?? 0,
-      OrderBookScore_Low: obj.OrderBookScore_Low ?? 0,
-      OrderBookScore_Close: obj.OrderBookScore_Close ?? 0,
-      Spread_Open: obj.Spread_Open ?? 0,  
-      Spread_High: obj.Spread_High ?? 0,
-      Spread_Low: obj.Spread_Low ?? 0,
-      Spread_Close: obj.Spread_Close ?? 0
-      
+      OrderBookScore_Mean: obj.OrderBookScore_Mean ?? 0,
+      Spread_Mean: obj.Spread_Mean ?? 0,  
+      Pressure_Mean: obj.Pressure_Mean ?? 0,
+      Absorption: obj.Absorption ?? 0,
+      DeltaDivergence: obj.DeltaDivergence ?? ''
     };
   }
 
@@ -123,14 +115,11 @@ export class MockService {
               this.lastBar.high = barData.high;
               this.lastBar.low = barData.low;
               this.lastBar.volume = barData.volume;
-              this.lastBar.OrderBookScore_Open = barData.OrderBookScore_Open;  
-              this.lastBar.OrderBookScore_High = barData.OrderBookScore_High;
-              this.lastBar.OrderBookScore_Low = barData.OrderBookScore_Low;
-              this.lastBar.OrderBookScore_Close = barData.OrderBookScore_Close;  
-              this.lastBar.Spread_Open = barData.Spread_Open;  
-              this.lastBar.Spread_High = barData.Spread_High;
-              this.lastBar.Spread_Low = barData.Spread_Low;
-              this.lastBar.Spread_Close = barData.Spread_Close;             
+              this.lastBar.OrderBookScore_Mean = barData.OrderBookScore_Mean;  
+              this.lastBar.Spread_Mean = barData.Spread_Mean;  
+              this.lastBar.Pressure_Mean = barData.Pressure_Mean;
+              this.lastBar.Absorption = barData.Absorption;
+              this.lastBar.DeltaDivergence = barData.DeltaDivergence;             
             }
           });
 
@@ -150,14 +139,12 @@ export class MockService {
         low: 0,
         close: 0,
         volume: 0,
-        OrderBookScore_Open: 0,  
-        OrderBookScore_High: 0,
-        OrderBookScore_Low: 0,
-        OrderBookScore_Close: 0,
-        Spread_Open: 0,  
-        Spread_High: 0,
-        Spread_Low: 0,
-        Spread_Close: 0
+        OrderBookScore_Mean: 0,  
+        Spread_Mean:  0,  
+        Pressure_Mean: 0,
+        Absorption: 0,
+        DeltaDivergence: ''            
+      
         
       };
     }
