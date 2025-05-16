@@ -37,23 +37,13 @@ export class TvComponent implements OnInit, OnDestroy {
 
   save() {
     let obj = this.tradingview.activeChart();
-    const now = new Date();
-    const timestamp = now.getFullYear() + 
-      ("0" + (now.getMonth() + 1)).slice(-2) + 
-      ("0" + now.getDate()).slice(-2) + "_" + 
-      ("0" + now.getHours()).slice(-2) + 
-      ("0" + now.getMinutes()).slice(-2) + 
-      ("0" + now.getSeconds()).slice(-2);
-
-
-
-    
+        
     this.tradingview.save(obj => {
       const newBlob = new Blob([JSON.stringify(obj.charts[0])], { type: "application/json" });
       const data = window.URL.createObjectURL(newBlob);
       const link = document.createElement("a");
       link.href = data;
-      link.download = this.symbol + '_layout_' + timestamp + '.json';
+      link.download = this.symbol + '_layout_.json';
       link.click();
     });
 
