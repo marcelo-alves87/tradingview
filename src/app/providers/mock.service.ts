@@ -12,7 +12,9 @@ interface BarData {
   close: number;
   volume: number;
   OrderBookScore_Mean: number,  
-  Spread_Mean: number,
+  ClusterPairSpread_Mean: number,
+  RawSpread_Mean: number,
+  DensitySpread_Mean: number,
   Pressure_Mean: number,
   Absorption: number,
   DeltaDivergence: string   
@@ -41,7 +43,9 @@ export class MockService {
       close: obj.close,
       volume: obj.volume,
       OrderBookScore_Mean: obj.OrderBookScore_Mean ?? 0,
-      Spread_Mean: obj.Spread_Mean ?? 0,  
+      ClusterPairSpread_Mean: obj.ClusterPairSpread_Mean ?? 0,  
+      RawSpread_Mean: obj.RawSpread_Mean ?? 0, 
+      DensitySpread_Mean: obj.DensitySpread_Mean ?? 0, 
       Pressure_Mean: obj.Pressure_Mean ?? 0,
       Absorption: obj.Absorption ?? 0,
       DeltaDivergence: obj.DeltaDivergence ?? ''
@@ -116,7 +120,9 @@ export class MockService {
               this.lastBar.low = barData.low;
               this.lastBar.volume = barData.volume;
               this.lastBar.OrderBookScore_Mean = barData.OrderBookScore_Mean;  
-              this.lastBar.Spread_Mean = barData.Spread_Mean;  
+              this.lastBar.ClusterPairSpread_Mean = barData.ClusterPairSpread_Mean; 
+              this.lastBar.RawSpread_Mean = barData.RawSpread_Mean;  
+              this.lastBar.DensitySpread_Mean = barData.DensitySpread_Mean;   
               this.lastBar.Pressure_Mean = barData.Pressure_Mean;
               this.lastBar.Absorption = barData.Absorption;
               this.lastBar.DeltaDivergence = barData.DeltaDivergence;             
@@ -140,7 +146,9 @@ export class MockService {
         close: 0,
         volume: 0,
         OrderBookScore_Mean: 0,  
-        Spread_Mean:  0,  
+        ClusterPairSpread_Mean:  0,  
+        RawSpread_Mean:  0, 
+        DensitySpread_Mean:  0, 
         Pressure_Mean: 0,
         Absorption: 0,
         DeltaDivergence: ''            
