@@ -202,6 +202,13 @@ export class TvComponent implements OnInit, OnDestroy {
   // Call your method when the chart is ready
       this.tradingview.onChartReady(() => {
 
+       /*  this.tradingview.chart().createStudy('Absorption', false, false, [], null, {
+          'Plot.color': '#FF0000', // Color the RSI line as red
+        
+        });
+ */
+
+
         this.tradingview.chart().createStudy('Cluster Pair Spread', false, false, [], null, {
           'Plot.color': '#FF0000', // Color the RSI line as red
         
@@ -217,7 +224,14 @@ export class TvComponent implements OnInit, OnDestroy {
         
         });    
 
-                  
+       /*  this.tradingview.chart().createStudy('OrderBook Score', false, false, [], null, {
+         'Plot.color': '#FF0000', // Color the RSI line as red         
+        });
+
+        this.tradingview.chart().createStudy('Pressure', false, false, [], null, {
+          'Plot.color': '#FF0000', // Color the RSI line as red     
+        }); */
+
       });
     }
 }
