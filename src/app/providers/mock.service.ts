@@ -11,14 +11,11 @@ interface BarData {
   low: number;
   close: number;
   volume: number;
-  OrderBookScore_Mean: number,  
-  ClusterPairSpread_Mean: number,
+  AgentFlow_Mean: number,  
   RawSpread_Mean: number,
   DensitySpread_Mean: number,
-  Pressure_Mean: number,
-  Absorption: number,
-  DeltaDivergence: string   
-}
+  Pressure_Mean: number
+ }
 
 @Injectable({
   providedIn: 'root',
@@ -42,13 +39,10 @@ export class MockService {
       low: obj.low,
       close: obj.close,
       volume: obj.volume,
-      OrderBookScore_Mean: obj.OrderBookScore_Mean ?? 0,
-      ClusterPairSpread_Mean: obj.ClusterPairSpread_Mean ?? 0,  
+      AgentFlow_Mean: obj.AgentFlow_Mean ?? 0,
       RawSpread_Mean: obj.RawSpread_Mean ?? 0, 
       DensitySpread_Mean: obj.DensitySpread_Mean ?? 0, 
-      Pressure_Mean: obj.Pressure_Mean ?? 0,
-      Absorption: obj.Absorption ?? 0,
-      DeltaDivergence: obj.DeltaDivergence ?? ''
+      Pressure_Mean: obj.Pressure_Mean ?? 0
     };
   }
 
@@ -119,13 +113,10 @@ export class MockService {
               this.lastBar.high = barData.high;
               this.lastBar.low = barData.low;
               this.lastBar.volume = barData.volume;
-              this.lastBar.OrderBookScore_Mean = barData.OrderBookScore_Mean;  
-              this.lastBar.ClusterPairSpread_Mean = barData.ClusterPairSpread_Mean; 
+              this.lastBar.AgentFlow_Mean = barData.AgentFlow_Mean;  
               this.lastBar.RawSpread_Mean = barData.RawSpread_Mean;  
               this.lastBar.DensitySpread_Mean = barData.DensitySpread_Mean;   
-              this.lastBar.Pressure_Mean = barData.Pressure_Mean;
-              this.lastBar.Absorption = barData.Absorption;
-              this.lastBar.DeltaDivergence = barData.DeltaDivergence;             
+              this.lastBar.Pressure_Mean = barData.Pressure_Mean;           
             }
           });
 
@@ -145,15 +136,11 @@ export class MockService {
         low: 0,
         close: 0,
         volume: 0,
-        OrderBookScore_Mean: 0,  
-        ClusterPairSpread_Mean:  0,  
+        AgentFlow_Mean: 0,  
         RawSpread_Mean:  0, 
         DensitySpread_Mean:  0, 
-        Pressure_Mean: 0,
-        Absorption: 0,
-        DeltaDivergence: ''            
-      
-        
+        Pressure_Mean: 0       
+
       };
     }
     const timestamp = this.lastBarTimestamp + granularity;
