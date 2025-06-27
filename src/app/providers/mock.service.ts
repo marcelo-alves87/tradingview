@@ -13,7 +13,7 @@ interface BarData {
   volume: number;
   RawSpread_Mean: number,
   DensitySpread_Mean: number,
-  ClusterGap_Mean: number
+  VolumeConcentration_Mean: number
  }
 
 @Injectable({
@@ -38,7 +38,7 @@ export class MockService {
       low: obj.low,
       close: obj.close,
       volume: obj.volume,
-      ClusterGap_Mean: obj.ClusterGap_Mean ?? 0,
+      VolumeConcentration_Mean: obj.VolumeConcentration_Mean ?? 0,
       RawSpread_Mean: obj.RawSpread_Mean ?? 0, 
       DensitySpread_Mean: obj.DensitySpread_Mean ?? 0
     };
@@ -111,7 +111,7 @@ export class MockService {
               this.lastBar.high = barData.high;
               this.lastBar.low = barData.low;
               this.lastBar.volume = barData.volume;
-              this.lastBar.ClusterGap_Mean = barData.ClusterGap_Mean;  
+              this.lastBar.VolumeConcentration_Mean = barData.VolumeConcentration_Mean;  
               this.lastBar.RawSpread_Mean = barData.RawSpread_Mean;  
               this.lastBar.DensitySpread_Mean = barData.DensitySpread_Mean;           
             }
@@ -133,7 +133,7 @@ export class MockService {
         low: 0,
         close: 0,
         volume: 0,
-        ClusterGap_Mean: 0,  
+        VolumeConcentration_Mean: 0,  
         RawSpread_Mean:  0, 
         DensitySpread_Mean:  0     
 

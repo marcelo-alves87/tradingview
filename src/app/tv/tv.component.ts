@@ -214,7 +214,7 @@ export class TvComponent implements OnInit, OnDestroy {
         });    
 
 
-        this.tradingview.chart().createStudy('Cluster Gap', false, false, [], null, {
+        this.tradingview.chart().createStudy('Volume Concentration', false, false, [], null, {
           'Plot.color': '#FF0000', // Color the RSI line as red     
         }); 
 
