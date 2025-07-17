@@ -211,7 +211,12 @@ export class TvComponent implements OnInit, OnDestroy {
         this.tradingview.chart().createStudy('Density Spread', false, false, [], null, {
           'Plot.color': '#FF0000', // Color the RSI line as red
         
-        });    
+        }); 
+        
+        this.tradingview.chart().createStudy('Liquidity', false, false, [], null, {
+          'Plot.color': '#FF0000', // Color the RSI line as red
+        
+        }); 
 
       });
     }
