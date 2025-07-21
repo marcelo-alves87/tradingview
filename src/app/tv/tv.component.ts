@@ -218,6 +218,11 @@ export class TvComponent implements OnInit, OnDestroy {
         
         }); 
 
+        this.tradingview.chart().createStudy('Pressure', false, false, [], null, {
+          'Plot.color': '#FF0000', // Color the RSI line as red
+        
+        }); 
+
       });
     }
 }

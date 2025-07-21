@@ -13,7 +13,8 @@ interface BarData {
   volume: number;
   RawSpread_Mean: number,
   DensitySpread_Mean: number,
-  Liquidity_Mean: number
+  Liquidity_Mean: number,
+  Pressure_Mean: number
  }
 
 @Injectable({
@@ -40,7 +41,8 @@ export class MockService {
       volume: obj.volume,
       Liquidity_Mean: obj.Liquidity_Mean ?? 0,
       RawSpread_Mean: obj.RawSpread_Mean ?? 0, 
-      DensitySpread_Mean: obj.DensitySpread_Mean ?? 0
+      DensitySpread_Mean: obj.DensitySpread_Mean ?? 0,
+      Pressure_Mean: obj.Pressure_Mean ?? 0
     };
   }
 
@@ -113,7 +115,8 @@ export class MockService {
               this.lastBar.volume = barData.volume;
               this.lastBar.Liquidity_Mean = barData.Liquidity_Mean;  
               this.lastBar.RawSpread_Mean = barData.RawSpread_Mean;  
-              this.lastBar.DensitySpread_Mean = barData.DensitySpread_Mean;           
+              this.lastBar.DensitySpread_Mean = barData.DensitySpread_Mean; 
+              this.lastBar.Pressure_Mean = barData.Pressure_Mean;              
             }
           });
 
@@ -135,8 +138,8 @@ export class MockService {
         volume: 0,
         Liquidity_Mean: 0,  
         RawSpread_Mean:  0, 
-        DensitySpread_Mean:  0     
-
+        DensitySpread_Mean: 0,
+        Pressure_Mean: 0     
       };
     }
     const timestamp = this.lastBarTimestamp + granularity;
