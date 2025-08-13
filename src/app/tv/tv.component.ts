@@ -31,8 +31,8 @@ export class TvComponent implements OnInit, OnDestroy {
     'D': 86400
   };
   private allBars: any[] = []; // or BarData[] if you import the type
-  private isNoticeOpen = false;
-  
+  private noticeOpen = false;
+  private liveNotification = false;
 
   constructor(private mockService: MockService, private titleService: Title) {
     
@@ -61,6 +61,16 @@ export class TvComponent implements OnInit, OnDestroy {
     fileReader.readAsText(files.item(0));
   }
 
+  toggleDescription(event: Event): void {
+    const checkbox = (event.target as HTMLInputElement);
+    if(checkbox.checked) {
+      this._openNoticeDialog(undefined);
+    } else {
+      this.tradingview.closePopupsAndDialogs();
+    }
+  }
+
+
   ngOnInit() {
     this.titleService.setTitle(this.symbol);
     this.ws = this.mockService.fakeWebSocket();
@@ -74,6 +84,42 @@ export class TvComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {    
     this.ws.close();
+  }
+
+  toggleLiveNotification(event: Event): void {
+    const checkbox = (event.target as HTMLInputElement);
+    this.liveNotification = checkbox.checked;
+  }
+
+  async _openNoticeDialog(bar) {
+    if(!bar) {
+      bar = this.allBars[this.allBars.length - 1];
+    }
+    await this.tradingview.closePopupsAndDialogs();
+    
+    this.noticeOpen = true;
+    const { leitura, tendencia, observacoes } = await interpret(bar.DensitySpread_Mean, bar.Liquidity_Mean, bar.Pressure_Mean);
+            
+    const body = `
+      <div style="text-align: center;">
+        <strong>Leitura do livro/fluxo:</strong><br>
+          ${leitura}<br><br>
+          <strong>Tendência provável:</strong><br>
+          ${tendencia}<br><br>
+          <strong>Observações:</strong><br>
+          ${observacoes}
+      </div>
+    `;
+
+    // show a chart-styled tooltip (dialog) using your widget helpers
+      this.tradingview.showNoticeDialog({
+        title: `Leitura • ${new Date(bar.time).toLocaleString()}`,
+        body,
+        callback: () => {
+            this.tradingview.closePopupsAndDialogs();           
+        }
+      });
+    
   }
 
   drawTv() {
@@ -191,6 +237,11 @@ export class TvComponent implements OnInit, OnDestroy {
                   if (lastbar.time === data.time) {
                     // Update the lastbar as data
                     this.allBars[this.allBars.length - 1] = data;
+
+                    if(this.liveNotification && this.noticeOpen) {
+                      this._openNoticeDialog(undefined);
+                    }
+
                   } else if (lastbar.time < data.time) {
                     // Add new data at the end of the array
                     this.allBars.push(data);
@@ -261,32 +312,8 @@ export class TvComponent implements OnInit, OnDestroy {
               param.price >= match.low &&
               param.price <= match.high;
 
-            if (!this.isNoticeOpen && insidePrice) {
-              this.isNoticeOpen = true;
-              const { leitura, tendencia, observacoes } = await interpret(match.DensitySpread_Mean, match.Liquidity_Mean, match.Pressure_Mean);
-              
-              const body = `
-                <div style="text-align: center;">
-                  <strong>Leitura do livro/fluxo:</strong><br>
-                    ${leitura}<br><br>
-                    <strong>Tendência provável:</strong><br>
-                    ${tendencia}<br><br>
-                    <strong>Observações:</strong><br>
-                    ${observacoes}
-                </div>
-              `;
-
-              // show a chart-styled tooltip (dialog) using your widget helpers
-                this.tradingview.showNoticeDialog({
-                  title: `Leitura • ${new Date(t * 1000).toLocaleString()}`,
-                  body,
-                  callback: () => {
-
-                    this.isNoticeOpen = false; 
-
-
-                  }
-                });
+            if (insidePrice && this.noticeOpen) {
+              this._openNoticeDialog(match);
             }
         }
 
