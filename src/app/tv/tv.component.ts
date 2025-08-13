@@ -3,7 +3,7 @@ import { MockService } from '../providers/mock.service';
 import { timer } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Title } from '@angular/platform-browser';
-
+import { interpret } from '../interpretation/trend-interpretation';
 
 @Component({
     selector: 'app-tv',
@@ -30,6 +30,9 @@ export class TvComponent implements OnInit, OnDestroy {
     '360': 60 * 60 * 6,
     'D': 86400
   };
+  private allBars: any[] = []; // or BarData[] if you import the type
+  private isNoticeOpen = false;
+  
 
   constructor(private mockService: MockService, private titleService: Title) {
     
@@ -140,7 +143,7 @@ export class TvComponent implements OnInit, OnDestroy {
               symbol
             }
           }).subscribe((data: any) => {
-            // push the history data to callback
+            this.allBars = data; // store globally
             onResult(data, { noData: false });
           });
         },
@@ -221,6 +224,57 @@ export class TvComponent implements OnInit, OnDestroy {
         this.tradingview.chart().createStudy('Pressure', false, false, [], null, {
           'Plot.color': '#FF0000', // Color the RSI line as red
         
+        }); 
+
+
+        
+
+        this.tradingview.chart().crossHairMoved(async (param: any) => {
+
+          const t = typeof param.time === 'number' && param.time > 2e10
+            ? Math.floor(param.time / 1000)
+            : param.time;
+          
+          const match = this.allBars.find(bar => {
+            const barTime = bar.time > 2e10 ? Math.floor(bar.time / 1000) : bar.time;
+            return barTime === t;
+          });
+
+          if(match) {
+            const insidePrice =
+              typeof param?.price === 'number' &&
+              param.price >= match.low &&
+              param.price <= match.high;
+
+            if (!this.isNoticeOpen && insidePrice) {
+              this.isNoticeOpen = true;
+              const { leitura, tendencia, observacoes } = await interpret(match.DensitySpread_Mean, match.Liquidity_Mean, match.Pressure_Mean);
+              
+              const body = `
+                <div style="text-align: center;">
+                  <strong>Leitura do livro/fluxo:</strong><br>
+                    ${leitura}<br><br>
+                    <strong>Tendência provável:</strong><br>
+                    ${tendencia}<br><br>
+                    <strong>Observações:</strong><br>
+                    ${observacoes}
+                </div>
+              `;
+
+              // show a chart-styled tooltip (dialog) using your widget helpers
+                this.tradingview.showNoticeDialog({
+                  title: `Leitura • ${new Date(t * 1000).toLocaleString()}`,
+                  body,
+                  callback: () => {
+
+                    this.isNoticeOpen = false; 
+
+
+                  }
+                });
+            }
+        }
+
         }); 
 
       });
