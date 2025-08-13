@@ -184,6 +184,21 @@ export class TvComponent implements OnInit, OnDestroy {
                 // realtime data
                 // data's timestamp === recent one ? Update the recent one : A new timestamp data
                 onTick(data);
+
+                if (this.allBars && Array.isArray(this.allBars)) { // Ensure it's an array
+                  const lastbar = this.allBars[this.allBars.length - 1];
+
+                  if (lastbar.time === data.time) {
+                    // Update the lastbar as data
+                    this.allBars[this.allBars.length - 1] = data;
+                  } else if (lastbar.time < data.time) {
+                    // Add new data at the end of the array
+                    this.allBars.push(data);
+                  }
+               }
+
+
+
               }
             } catch (e) {
               console.error(e);
