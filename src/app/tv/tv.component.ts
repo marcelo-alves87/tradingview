@@ -63,9 +63,8 @@ export class TvComponent implements OnInit, OnDestroy {
 
   toggleDescription(event: Event): void {
     const checkbox = (event.target as HTMLInputElement);
-    if(checkbox.checked) {
-      this._openNoticeDialog(undefined);
-    } else {
+    this.noticeOpen = checkbox.checked;
+    if(!checkbox.checked) {
       this.tradingview.closePopupsAndDialogs();
     }
   }
@@ -97,7 +96,6 @@ export class TvComponent implements OnInit, OnDestroy {
     }
     await this.tradingview.closePopupsAndDialogs();
     
-    this.noticeOpen = true;
     const { leitura, tendencia, observacoes } = await interpret(bar.DensitySpread_Mean, bar.Liquidity_Mean, bar.Pressure_Mean);
             
     const body = `
