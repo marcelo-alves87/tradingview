@@ -311,16 +311,10 @@ export class TvComponent implements OnInit, OnDestroy {
             return barTime === t;
           });
 
-          if(match) {
-            const insidePrice =
-              typeof param?.price === 'number' &&
-              param.price >= match.low &&
-              param.price <= match.high;
-
-            if (insidePrice && this.noticeOpen) {
-              this._openNoticeDialog(match);
-            }
-        }
+          if(match && this.noticeOpen)  {
+            this._openNoticeDialog(match);
+          }
+        
 
         }); 
 
