@@ -33,6 +33,8 @@ export class TvComponent implements OnInit, OnDestroy {
   private allBars: any[] = []; // or BarData[] if you import the type
   private noticeOpen = false;
   private liveNotification = false;
+  private content = {title: '', body: ''};
+  private isDialogShown = false;
 
   constructor(private mockService: MockService, private titleService: Title) {
     
@@ -98,7 +100,7 @@ export class TvComponent implements OnInit, OnDestroy {
     
     const { leitura, tendencia, observacoes } = await interpret(bar.DensitySpread_Mean, bar.Liquidity_Mean, bar.Pressure_Mean);
             
-    const body = `
+    this.content.body = `
       <div style="text-align: center;">
         <strong>Leitura do livro/fluxo:</strong><br>
           ${leitura}<br><br>
@@ -109,15 +111,20 @@ export class TvComponent implements OnInit, OnDestroy {
       </div>
     `;
 
-    // show a chart-styled tooltip (dialog) using your widget helpers
-      this.tradingview.showNoticeDialog({
-        title: `Leitura • ${new Date(bar.time).toLocaleString()}`,
-        body,
-        callback: () => {
-            this.tradingview.closePopupsAndDialogs();           
-        }
-      });
-    
+    this.content.title =  `Leitura • ${new Date(bar.time).toLocaleString()}`;
+
+      if(!this.isDialogShown) {
+        this.isDialogShown = true;
+      // show a chart-styled tooltip (dialog) using your widget helpers
+        this.tradingview.showNoticeDialog({
+          title: this.content.title,
+          body: this.content.body,
+          callback: () => {
+              this.tradingview.closePopupsAndDialogs();       
+              this.isDialogShown = false;    
+          }
+        });
+    }
   }
 
   drawTv() {
