@@ -276,11 +276,10 @@ export class TvComponent implements OnInit, OnDestroy {
   // Call your method when the chart is ready
       this.tradingview.onChartReady(() => {
 
-
-        this.tradingview.chart().createStudy('Raw Spread', false, false, [], null, {
+        this.tradingview.chart().createStudy('Agent Density', false, false, [], null, {
           'Plot.color': '#FF0000', // Color the RSI line as red
         
-        });
+        }); 
         
         this.tradingview.chart().createStudy('Density Spread', false, false, [], null, {
           'Plot.color': '#FF0000', // Color the RSI line as red
@@ -297,6 +296,10 @@ export class TvComponent implements OnInit, OnDestroy {
         
         }); 
 
+       /* this.tradingview.chart().createStudy('Tendency', false, false, [], null, {
+          'Plot.color': '#FF0000', // Color the RSI line as red
+        
+        }); */
 
         
 

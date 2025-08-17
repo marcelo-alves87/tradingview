@@ -1,30 +1,27 @@
-// --- 7-level bands (no "Baixo" / "Muito Baixo") ----------------------------
+// --- 5-level bands (no "Baixo" / "Muito Baixo") ----------------------------
 
-export type Band7 =
-  | '+Muito Alto' | '+Alto' | '+Medio' | '0'
-  | '-Medio' | '-Alto' | '-Muito Alto';
+export type Band5 = '+Alto' | '+Medio' | '0' | '-Medio' | '-Alto';
 
-/** Collapse to 7 bands. You can tune the cutoffs later (or swap to percentiles). */
-export function toBand7(x: number | undefined): Band7 {
-  if (x == null || !isFinite(x)) return '0';
-  if (x >= 0.90) return '+Muito Alto';
-  if (x >= 0.45) return '+Alto';
+export function toBand5(x: number | undefined): Band5 {
+  if (typeof x !== 'number' || !Number.isFinite(x)) return '0';
+
+  if (x >= 0.65) return '+Alto';
   if (x >= 0.10) return '+Medio';
-  if (x >  -0.10) return '0';
-  if (x >  -0.45) return '-Medio';
-  if (x >  -0.90) return '-Alto';
-  return '-Muito Alto';
+  if (x >= -0.10) return '0';
+  if (x >= -0.65) return '-Medio';
+  return '-Alto';
 }
 
 
 
-export async function interpret(ds?: number, liq?: number, press?: number) {
+export async function interpret(ds?: number, liq?: number, press?: number, ad?: number) {
 
   // Convert the input values to the corresponding labels
   const key = { 
-    dens: toBand7(ds), 
-    liq: toBand7(liq), 
-    press: toBand7(press) 
+    dens: toBand5(ds), 
+    liq: toBand5(liq), 
+    press: toBand5(press),
+    ad: toBand5(press)  
   };
 
   // Function to encode the URL parameters
@@ -33,8 +30,10 @@ export async function interpret(ds?: number, liq?: number, press?: number) {
   };
 
   try {
+    const url_ = `http://localhost:3000/interpretation?DensitySpread_Label=${encodeLabel(key.dens)}&Liquidity_Label=${encodeLabel(key.liq)}&Pressure_Label=${encodeLabel(key.press)}&AgentDensity_Label=${encodeLabel(key.ad)}`;
+    console.log(url_);
     // Make the request to the interpretation endpoint
-    const response = await fetch(`http://localhost:3000/interpretation?DensitySpread_Label=${encodeLabel(key.dens)}&Liquidity_Label=${encodeLabel(key.liq)}&Pressure_Label=${encodeLabel(key.press)}`);
+    const response = await fetch(url_);
     
     // Check if the response is successful
     if (!response.ok) {
@@ -43,9 +42,10 @@ export async function interpret(ds?: number, liq?: number, press?: number) {
         dens: key.dens, 
         liq: key.liq, 
         press: key.press,
-        leitura: 'Sem leitura definida (7 níveis)',
+        ad: key.ad,
+        leitura: 'Sem leitura definida (5 níveis)',
         tendencia: 'Neutra',
-        observacoes: 'Adicione uma regra ao INTERP7 para cobrir este combo.'
+        observacoes: 'Adicione uma regra ao INTERP5 para cobrir este combo.'
       };
     }
 
@@ -57,9 +57,10 @@ export async function interpret(ds?: number, liq?: number, press?: number) {
       dens: key.dens,
       liq: key.liq,
       press: key.press,
-      leitura: 'Sem leitura definida (7 níveis)',
+      ad: key.ad,
+      leitura: 'Sem leitura definida (5 níveis)',
       tendencia: 'Neutra',
-      obs: 'Adicione uma regra ao INTERP7 para cobrir este combo.'
+      obs: 'Adicione uma regra ao INTERP5 para cobrir este combo.'
     };
   } catch (error) {
     console.error('Error fetching interpretation:', error);
@@ -69,9 +70,10 @@ export async function interpret(ds?: number, liq?: number, press?: number) {
       dens: key.dens,
       liq: key.liq,
       press: key.press,
-      leitura: 'Sem leitura definida (7 níveis)',
+      ad: key.ad,
+      leitura: 'Sem leitura definida (5 níveis)',
       tendencia: 'Neutra',
-      obs: 'Adicione uma regra ao INTERP7 para cobrir este combo.'
+      obs: 'Adicione uma regra ao INTERP5 para cobrir este combo.'
     };
   }
 }
