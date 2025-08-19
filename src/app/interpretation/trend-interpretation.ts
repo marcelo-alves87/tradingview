@@ -51,7 +51,7 @@ export async function interpret(ds?: number, liq?: number, press?: number, ad?: 
 
     // Parse the response JSON
     const data = await response.json();
-    console.log(data);
+    
     // If data exists, return it, otherwise, return the default
     return data ?? {
       dens: key.dens,
