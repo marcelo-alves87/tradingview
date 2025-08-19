@@ -98,7 +98,7 @@ export class TvComponent implements OnInit, OnDestroy {
     }
     await this.tradingview.closePopupsAndDialogs();
     
-    const { leitura, tendencia, observacoes } = await interpret(bar.DensitySpread_Mean, bar.Liquidity_Mean, bar.Pressure_Mean, bar.AgentDensity_Mean);
+    const { leitura, tendencia, observacoes } = await interpret(bar.DensitySpread_Mean, bar.Liquidity_Mean, bar.Pressure_Mean, bar.AgentImbalance_Max);
             
     this.content.body = `
       <div style="text-align: center;">
