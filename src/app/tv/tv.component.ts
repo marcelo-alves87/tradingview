@@ -98,7 +98,7 @@ export class TvComponent implements OnInit, OnDestroy {
     }
     await this.tradingview.closePopupsAndDialogs();
     
-    const { leitura, tendencia, observacoes } = await interpret(bar.DensitySpread_Mean, bar.Liquidity_Mean, bar.Pressure_Mean);
+    const { leitura, tendencia, observacoes } = await interpret(bar.DensitySpread_Mean, bar.Liquidity_Mean, bar.Pressure_Mean, bar.AgentDensity_Mean);
             
     this.content.body = `
       <div style="text-align: center;">
@@ -276,7 +276,7 @@ export class TvComponent implements OnInit, OnDestroy {
   // Call your method when the chart is ready
       this.tradingview.onChartReady(() => {
 
-        this.tradingview.chart().createStudy('Agent Density', false, false, [], null, {
+        this.tradingview.chart().createStudy('Agent Imbalance', false, false, [], null, {
           'Plot.color': '#FF0000', // Color the RSI line as red
         
         }); 

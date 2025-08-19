@@ -21,7 +21,7 @@ export async function interpret(ds?: number, liq?: number, press?: number, ad?: 
     dens: toBand5(ds), 
     liq: toBand5(liq), 
     press: toBand5(press),
-    ad: toBand5(press)  
+    ad: toBand5(ad)  
   };
 
   // Function to encode the URL parameters
@@ -30,8 +30,8 @@ export async function interpret(ds?: number, liq?: number, press?: number, ad?: 
   };
 
   try {
-    const url_ = `http://localhost:3000/interpretation?DensitySpread_Label=${encodeLabel(key.dens)}&Liquidity_Label=${encodeLabel(key.liq)}&Pressure_Label=${encodeLabel(key.press)}&AgentDensity_Label=${encodeLabel(key.ad)}`;
-    console.log(url_);
+    const url_ = `http://localhost:3000/interpretation?DensitySpread_Label=${encodeLabel(key.dens)}&Liquidity_Label=${encodeLabel(key.liq)}&Pressure_Label=${encodeLabel(key.press)}&AgentImbalance_Label=${encodeLabel(key.ad)}`;
+    
     // Make the request to the interpretation endpoint
     const response = await fetch(url_);
     
@@ -51,7 +51,7 @@ export async function interpret(ds?: number, liq?: number, press?: number, ad?: 
 
     // Parse the response JSON
     const data = await response.json();
-    
+    console.log(data);
     // If data exists, return it, otherwise, return the default
     return data ?? {
       dens: key.dens,
