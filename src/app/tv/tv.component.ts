@@ -71,6 +71,47 @@ export class TvComponent implements OnInit, OnDestroy {
     }
   }
 
+  toggleShowIndicators(event: Event): void {
+    const checkbox = (event.target as HTMLInputElement);
+    if(!checkbox.checked) {
+      this.tradingview.chart().removeAllStudies();
+    } else {
+
+      this.tradingview.chart().createStudy('Volume', false, false, [], null, {
+        'Plot.color': '#FF0000', // Color the RSI line as red
+      
+      });
+
+      this.tradingview.chart().createStudy('Agent Imbalance', false, false, [], null, {
+        'Plot.color': '#FF0000', // Color the RSI line as red
+      
+      }); 
+      
+      this.tradingview.chart().createStudy('Density Spread', false, false, [], null, {
+        'Plot.color': '#FF0000', // Color the RSI line as red
+      
+      }); 
+      
+      this.tradingview.chart().createStudy('Liquidity', false, false, [], null, {
+        'Plot.color': '#FF0000', // Color the RSI line as red
+      
+      }); 
+
+      this.tradingview.chart().createStudy('Pressure', false, false, [], null, {
+        'Plot.color': '#FF0000', // Color the RSI line as red
+      
+      });  
+
+      /* this.tradingview.chart().createStudy('Tendency', false, false, [], null, {
+        'Plot.color': '#FF0000', // Color the RSI line as red
+      
+      }); */
+
+
+
+    }
+  }
+
 
   ngOnInit() {
     this.titleService.setTitle(this.symbol);
@@ -275,33 +316,6 @@ export class TvComponent implements OnInit, OnDestroy {
 
   // Call your method when the chart is ready
       this.tradingview.onChartReady(() => {
-
-        this.tradingview.chart().createStudy('Agent Imbalance', false, false, [], null, {
-          'Plot.color': '#FF0000', // Color the RSI line as red
-        
-        }); 
-        
-        this.tradingview.chart().createStudy('Density Spread', false, false, [], null, {
-          'Plot.color': '#FF0000', // Color the RSI line as red
-        
-        }); 
-        
-        this.tradingview.chart().createStudy('Liquidity', false, false, [], null, {
-          'Plot.color': '#FF0000', // Color the RSI line as red
-        
-        }); 
-
-        this.tradingview.chart().createStudy('Pressure', false, false, [], null, {
-          'Plot.color': '#FF0000', // Color the RSI line as red
-        
-        }); 
-
-       /* this.tradingview.chart().createStudy('Tendency', false, false, [], null, {
-          'Plot.color': '#FF0000', // Color the RSI line as red
-        
-        }); */
-
-        
 
         this.tradingview.chart().crossHairMoved(async (param: any) => {
 
