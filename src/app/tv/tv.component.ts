@@ -112,6 +112,26 @@ export class TvComponent implements OnInit, OnDestroy {
     }
   }
 
+  toggleShowEMA(event: Event): void {
+
+    const checkbox = (event.target as HTMLInputElement);
+    if(!checkbox.checked) {
+      this.tradingview.chart().removeAllStudies();
+    } else {
+      this.tradingview.chart().createStudy('EMA Cross', false, false, [], null, {
+        
+      
+      });  
+
+
+      this.tradingview.chart().createStudy('Exponential Moving Average', false, false, [], null, {
+        
+      
+      }); 
+
+    }
+  }
+
 
   ngOnInit() {
     this.titleService.setTitle(this.symbol);
