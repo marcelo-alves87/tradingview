@@ -31,10 +31,11 @@ export class TvComponent implements OnInit, OnDestroy {
     'D': 86400
   };
   private allBars: any[] = []; // or BarData[] if you import the type
-  private noticeOpen = false;
-  private liveNotification = false;
   private content = {title: '', body: ''};
   private isDialogShown = false;
+  showIndicators = false;
+  showEMA = false;
+  showPivotPoints = false;
 
   constructor(private mockService: MockService, private titleService: Title) {
     
@@ -63,72 +64,24 @@ export class TvComponent implements OnInit, OnDestroy {
     fileReader.readAsText(files.item(0));
   }
 
-  toggleDescription(event: Event): void {
-    const checkbox = (event.target as HTMLInputElement);
-    this.noticeOpen = checkbox.checked;
-    if(!checkbox.checked) {
-      this.tradingview.closePopupsAndDialogs();
+  onToggleChange(): void {
+    this.tradingview.chart().removeAllStudies();
+
+    if(this.showPivotPoints) {
+      this.tradingview.chart().createStudy('Pivot Points', false, false, [], null, {});
     }
-  }
-
-  toggleShowIndicators(event: Event): void {
-    const checkbox = (event.target as HTMLInputElement);
-    if(!checkbox.checked) {
-      this.tradingview.chart().removeAllStudies();
-    } else {
-
-      this.tradingview.chart().createStudy('Volume', false, false, [], null, {
-        'Plot.color': '#FF0000', // Color the RSI line as red
-      
-      });
-
-      this.tradingview.chart().createStudy('Agent Imbalance', false, false, [], null, {
-        'Plot.color': '#FF0000', // Color the RSI line as red
-      
-      }); 
-      
-      this.tradingview.chart().createStudy('Density Spread', false, false, [], null, {
-        'Plot.color': '#FF0000', // Color the RSI line as red
-      
-      }); 
-      
-      this.tradingview.chart().createStudy('Liquidity', false, false, [], null, {
-        'Plot.color': '#FF0000', // Color the RSI line as red
-      
-      }); 
-
-      this.tradingview.chart().createStudy('Pressure', false, false, [], null, {
-        'Plot.color': '#FF0000', // Color the RSI line as red
-      
-      });  
-
-      /* this.tradingview.chart().createStudy('Tendency', false, false, [], null, {
-        'Plot.color': '#FF0000', // Color the RSI line as red
-      
-      }); */
-
-
-
+    
+    if (this.showIndicators) {
+      this.tradingview.chart().createStudy('Volume', false, false, [], null, {});
+      this.tradingview.chart().createStudy('Agent Imbalance', false, false, [], null, {});
+      this.tradingview.chart().createStudy('Density Spread', false, false, [], null, {});
+      this.tradingview.chart().createStudy('Liquidity', false, false, [], null, {});
+      this.tradingview.chart().createStudy('Pressure', false, false, [], null, {});
     }
-  }
 
-  toggleShowEMA(event: Event): void {
-
-    const checkbox = (event.target as HTMLInputElement);
-    if(!checkbox.checked) {
-      this.tradingview.chart().removeAllStudies();
-    } else {
-      this.tradingview.chart().createStudy('EMA Cross', false, false, [], null, {
-        
-      
-      });  
-
-
-      this.tradingview.chart().createStudy('Exponential Moving Average', false, false, [], null, {
-        
-      
-      }); 
-
+    if (this.showEMA) {
+      this.tradingview.chart().createStudy('EMA Cross', false, false, [], null, {});
+      this.tradingview.chart().createStudy('Exponential Moving Average', false, false, [], null, {});
     }
   }
 
@@ -146,11 +99,6 @@ export class TvComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {    
     this.ws.close();
-  }
-
-  toggleLiveNotification(event: Event): void {
-    const checkbox = (event.target as HTMLInputElement);
-    this.liveNotification = checkbox.checked;
   }
 
   async _openNoticeDialog(bar) {
@@ -304,10 +252,6 @@ export class TvComponent implements OnInit, OnDestroy {
                     // Update the lastbar as data
                     this.allBars[this.allBars.length - 1] = data;
 
-                    if(this.liveNotification && this.noticeOpen) {
-                      this._openNoticeDialog(undefined);
-                    }
-
                   } else if (lastbar.time < data.time) {
                     // Add new data at the end of the array
                     this.allBars.push(data);
@@ -347,10 +291,6 @@ export class TvComponent implements OnInit, OnDestroy {
             const barTime = bar.time > 2e10 ? Math.floor(bar.time / 1000) : bar.time;
             return barTime === t;
           });
-
-          if(match && this.noticeOpen)  {
-            this._openNoticeDialog(match);
-          }
         
 
         }); 

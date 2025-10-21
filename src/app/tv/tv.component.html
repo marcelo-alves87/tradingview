@@ -6,16 +6,13 @@
             (change)="handleFileInput($event.target.files)">
     </div>
 
-    <input type="checkbox" id="enableDescription" (change)="toggleDescription($event)">
-    <label style="margin-top: 2px;" for="enableDescription">Allow Description</label>
+    <input type="checkbox" id="showPivotPoints" [(ngModel)]="showPivotPoints" (change)="onToggleChange()">
+    <label for="showPivotPoints">Show Pivot Points</label>
 
-    <input type="checkbox" id="enableLiveNotification" (change)="toggleLiveNotification($event)">
-    <label style="margin-top: 2px;" for="enableLiveNotification">Live Notification</label>
+    <input type="checkbox" id="showIndicators" [(ngModel)]="showIndicators" (change)="onToggleChange()">
+    <label for="showIndicators">Show Indicators</label>
 
-    <input type="checkbox" id="showIndicators" (change)="toggleShowIndicators($event)">
-    <label style="margin-top: 2px;" for="showIndicators">Show Indicators</label>
-
-    <input type="checkbox" id="showEMA" (change)="toggleShowEMA($event)">
-    <label style="margin-top: 2px;" for="showEMA">Show EMA Cross</label>
+    <input type="checkbox" id="showEMA" [(ngModel)]="showEMA" (change)="onToggleChange()">
+    <label for="showEMA">Show EMA Cross</label>
 </div>
 <div id="tradingview"></div>
